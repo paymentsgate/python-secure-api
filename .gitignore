@@ -1,0 +1,22 @@
+*.py[cod]
+/dist/
+/build/
+*.egg-info/
+# virtualenv
+/bin/
+/lib/
+/include/
+.Python
+pip-selfcheck.json
+# ide
+/.idea/
+/python-sdk.iml
+*.iml
+__pycache__/
+venv/
+.venv/
+
+.coverage
+.pytest_cache/
+/credentials.json
+/___main___.py
