@@ -24,7 +24,7 @@ class ApiPaths(StrEnum):
     appel_create = "/support/create"
     appel_list = "/support/list"
     appel_stat = "/support/statistic"
-    fx_quote = "/fx/calculation"
+    fx_quote = "/fx/calculatenew"
 
 class Currencies(StrEnum):
     USDT = "USDT"

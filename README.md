@@ -44,16 +44,16 @@ print(res);
 The `credentials.json` file is used to connect to the client and contains all necessary data to use the API. This file can be obtained in your personal cabinet, in the service accounts section. Follow the instructions in the documentation to issue new keys. If you already have keys, but you don't feel comfortable storing them in a file, you can use client initialization via variables. In this case, the key data can be stored in external storage instead of on the file system:
 
 ```python
-  from paymentsgate import ApiClient, Credentials
+from paymentsgate import ApiClient, Credentials
 
-  config = Credentials(
-    account_id="00000000-4000-4000-0000-00000000000a" 
-    public_key="LS0tLS1CRUdJTiBSU0EgUFJJVkFUNSUlFb3dJQk..."
-  )
+config = Credentials(
+  account_id="00000000-4000-4000-0000-00000000000a" 
+  public_key="LS0tLS1CRUdJTiBSU0EgUFJJVkFUNSUlFb3dJQk..."
+)
 
-  client = ApiClient(config, baseUrl='https://api.example.com');
+client = ApiClient(config, baseUrl='https://api.example.com');
 
-  ...
+...
 ```
 *It is important to note that the data format for key transfer is base46.
 
