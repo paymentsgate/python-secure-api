@@ -12,7 +12,8 @@ from paymentsgate.enums import (
   TTLUnits, 
   CurrencyTypes, 
   FeesStrategy,
-  InvoiceDirection
+  InvoiceDirection,
+  CredentialsTypes
 )
 
 from pydantic import BaseModel, ConfigDict
@@ -128,7 +129,7 @@ class GetQuoteModel:
   currency_from: Currencies
   currency_to: Currencies
   amount: float
-  subtype: Subtype
+  subtype: InvoiceTypes
 
 @dataclass
 class QuoteEntity:
