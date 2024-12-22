@@ -128,6 +128,7 @@ class GetQuoteModel:
   currency_from: Currencies
   currency_to: Currencies
   amount: float
+  subtype: Subtype
 
 @dataclass
 class QuoteEntity:
