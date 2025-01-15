@@ -1,5 +1,6 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+import logging
+from dataclasses import dataclass, is_dataclass, field, asdict
 import json
 from urllib.parse import urlencode
 
@@ -33,6 +34,7 @@ from paymentsgate.cache import (
 
 import requests
 
+
 @dataclass
 class ApiClient:
     baseUrl: str = field(default="", init=False)
@@ -44,10 +46,12 @@ class ApiClient:
     REQUEST_DEBUG: bool = False
     RESPONSE_DEBUG: bool = False
 
-    def __init__(self, config: Credentials, baseUrl: str):
+    def __init__(self, config: Credentials, baseUrl: str, debug: bool=False):
         self.config = config
         self.cache = DefaultCache()
-        self.baseUrl = baseUrl;
+        self.baseUrl = baseUrl
+        if debug:
+            logging.basicConfig(level=logging.DEBUG)
 
     def PayIn(self, request: PayInModel) -> PayInResponseModel:
          # Prepare request
@@ -100,10 +104,10 @@ class ApiClient:
         # Handle response
         response = self._send_request(request)
         self.logger(request, response)
-        if (response.success):
-            return response.cast(GetQuoteResponseModel, APIResponseError)
-        else:
+        if not response.success:
             raise APIResponseError(response)
+
+        return response.cast(GetQuoteResponseModel, APIResponseError)
 
     @property
     def token(self) -> AccessToken | None:
@@ -152,7 +156,7 @@ class ApiClient:
         """
         Send a specified Request to the GoPay REST API and process the response
         """
-
+        body = asdict(request.body) if is_dataclass(request.body) else request.body
         # Add Bearer authentication to headers if needed
         headers = request.headers or {}
         if not request.noAuth:
@@ -161,9 +165,10 @@ class ApiClient:
                 headers["Authorization"] = f"Bearer {auth.token}"
 
         if (request.method == 'get'):
+            params = urlencode(body)
             r = requests.request(
                 method=request.method,
-                url=f"{self.baseUrl}{request.path}?{urlencode(request.body)}",
+                url=f"{self.baseUrl}{request.path}?{params}",
                 headers=headers,
                 timeout=self.timeout
             )
@@ -172,7 +177,7 @@ class ApiClient:
                 method=request.method,
                 url=f"{self.baseUrl}{request.path}",
                 headers=headers,
-                json=request.body,
+                json=body,
                 timeout=self.timeout
             )
 

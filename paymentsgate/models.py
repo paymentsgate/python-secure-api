@@ -22,11 +22,11 @@ from pydantic import BaseModel, ConfigDict
 class Credentials:
   def __init__(
       self, 
-      account_id='', 
-      merchant_id='', 
-      project_id='', 
-      private_key='', 
-      public_key=''
+      account_id: str,
+      merchant_id: str,
+      project_id: str,
+      private_key: str,
+      public_key: str
   ):
      self.account_id = account_id
      self.merchant_id = merchant_id
@@ -34,14 +34,14 @@ class Credentials:
      self.private_key = private_key
      self.public_key = public_key
   
+  @classmethod
   def fromFile(cls, filename):
     data = json.load(open(filename))
-    cls.account_id = data.get('account_id')
-    cls.merchant_id = data.get('merchant_id')
-    cls.project_id = data.get('project_id')
-    cls.private_key = data.get('private_key')
-    cls.public_key = data.get('public_key')
-    return cls
+    return cls(data.get('account_id'),
+               data.get('merchant_id'),
+               data.get('project_id'),
+               data.get('private_key'),
+               data.get('public_key'))
 
 
 @dataclass
@@ -148,6 +148,7 @@ class GetQuoteResponseModel:
   fees: Optional[float]  = None
   fees_percent: Optional[float]  = None
   quotes: Optional[List[QuoteEntity]]  = None
+  expiredAt: Optional[datetime.datetime] = None
 
   #deprecated
   currency_from: Optional[CurrencyModel] = None
