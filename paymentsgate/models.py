@@ -200,9 +200,11 @@ class InvoiceAmountModel:
 class InvoiceMetadataModel:
   invoiceId: Optional[str]
   clientId: Optional[str]
+  fiatAmount: Optional[float]
 
 @dataclass
 class InvoiceModel:
+  _id: str
   orderId: str
   projectId: str
   currencyFrom: CurrencyModel
@@ -212,6 +214,8 @@ class InvoiceModel:
   status: InvoiceStatusModel
   amounts: InvoiceAmountModel
   metadata: InvoiceMetadataModel
+  receiptUrls: List[str]
+  isExpired: bool
   createdAt: datetime
   updatedAt: datetime
   expiredAt: datetime
@@ -226,3 +230,4 @@ class AssetsAccountModel:
 @dataclass
 class AssetsResponseModel:
   assets: List[AssetsAccountModel]
+

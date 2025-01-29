@@ -14,7 +14,7 @@ name = "paymentsgate"
 packages = [{include = "paymentsgate"}]
 readme = "README.md"
 repository = "https://github.com/paymentsgate/python-secure-api"
-version = "1.4.5"
+version = "1.4.8"
 
 [tool.poetry.dependencies]
 pydantic = "^2.8.2"

@@ -19,7 +19,8 @@ from paymentsgate.models import (
     PayInModel, 
     PayInResponseModel, 
     PayOutModel, 
-    PayOutResponseModel
+    PayOutResponseModel,
+    InvoiceModel
 )
 from paymentsgate.enums import ApiPaths
 from paymentsgate.transport import (
@@ -33,7 +34,6 @@ from paymentsgate.cache import (
 )
 
 import requests
-
 
 @dataclass
 class ApiClient:
@@ -108,6 +108,25 @@ class ApiClient:
             raise APIResponseError(response)
 
         return response.cast(GetQuoteResponseModel, APIResponseError)
+    
+    def Status(self, query: str) -> InvoiceModel:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.invoices_info,
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+            body=request
+        )
+
+        # Handle response
+        response = self._send_request(request)
+        self.logger(request, response)
+        if not response.success:
+            raise APIResponseError(response)
+
+        return response.cast(InvoiceModel, APIResponseError)
 
     @property
     def token(self) -> AccessToken | None:
