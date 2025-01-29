@@ -90,7 +90,7 @@ class ApiClient:
         else:
             raise APIResponseError(response)
 
-    def Quote(self, request: GetQuoteModel) -> GetQuoteResponseModel:
+    def Quote(self, params: GetQuoteModel) -> GetQuoteResponseModel:
          # Prepare request
         request = Request(
             method="get",
@@ -98,7 +98,7 @@ class ApiClient:
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body=request
+            body=params
         )
 
         # Handle response
@@ -109,15 +109,14 @@ class ApiClient:
 
         return response.cast(GetQuoteResponseModel, APIResponseError)
     
-    def Status(self, query: str) -> InvoiceModel:
+    def Status(self, id: str) -> InvoiceModel:
          # Prepare request
         request = Request(
             method="get",
-            path=ApiPaths.invoices_info,
+            path=ApiPaths.invoices_info.replace(':id', id),
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body=request
         )
 
         # Handle response
