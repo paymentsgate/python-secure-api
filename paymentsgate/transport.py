@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from pydantic import BaseModel
 
-@dataclass
-class Request:
+class Request(BaseModel):
     method: str
     path: str
     content_type: str = 'application/json'
@@ -11,11 +10,9 @@ class Request:
     noAuth: bool | None = False
     signature: bool | None = False
 
-
-@dataclass
-class Response:
+class Response(BaseModel):
     raw_body: bytes
-    json: dict
+    json_body: dict
     status_code: int
 
     @property
@@ -24,8 +21,8 @@ class Response:
 
     def cast(self, model: BaseModel, error: dict):
         if self.success:
-            return model(**self.json)
-        return error(self.json.get('error'), self.json.get('message'), self.json.get('data'), self.json.get('status'));
+            return model(**self.json_body)
+        return error(self.json_body.get('error'), self.json_body.get('message'), self.json_body.get('data'), self.json_body.get('status'));
     
     def __str__(self) -> str:
        return self.raw_body.decode("utf-8")

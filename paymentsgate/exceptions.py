@@ -31,8 +31,8 @@ class APIError(PaymentsgateError):
 
 class APIResponseError(APIError):
     def __init__(self, response: Response) -> None:
-        super().__init__(response.json.get('error'), response.json.get('message'), response.json.get('data'), response.json.get('details'),  response.status_code)
+        super().__init__(response.json_body.get('error'), response.json_body.get('message'), response.json_body.get('data'), response.json_body.get('details'),  response.status_code)
 
 class APIAuthenticationError(APIError):
     def __init__(self, response: Response) -> None:
-        super().__init__(response.json.get('error'), response.json.get('message'), response.json.get('data'), response.json.get('details'), response.status_code)
+        super().__init__(response.json_body.get('error'), response.json_body.get('message'), response.json_body.get('data'), response.json_body.get('details'), response.status_code)

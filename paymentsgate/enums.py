@@ -16,6 +16,7 @@ class ApiPaths(StrEnum):
     token_validate = "/auth/token/validate"
     invoices_payin = "/deals/payin"
     invoices_payout = "/deals/payout"
+    invoices_payout_tlv = "/deals/tlv"
     invoices_info = "/deals/:id"
     invoices_credentials = "/deals/:id/credentials"
     assets_list = "/wallet"
@@ -25,6 +26,7 @@ class ApiPaths(StrEnum):
     appel_list = "/support/list"
     appel_stat = "/support/statistic"
     fx_quote = "/fx/calculatenew"
+    fx_quote_tlv = "/fx/tlv"
 
 class Currencies(StrEnum):
     USDT = "USDT"
@@ -57,14 +59,16 @@ class Currencies(StrEnum):
     AMD = "AMD"
 
 class Languages(StrEnum):
-    EN = "EN"
-    IN = "IN"
-    AE = "AE"
-    TR = "TR"
-    GE = "GE"
-    RU = "RU"
-    UZ = "UZ"
-    AZ = "AZ"
+    EN = "EN",
+    AZ = "AZ",
+    UZ = "UZ",
+    GE = "GE",
+    TR = "TR",
+    AE = "AE",
+    RU = "RU",
+    IN = "IN",
+    AR = "AR",
+    KG = "KG"
 
 
 class Statuses(StrEnum):
@@ -118,14 +122,42 @@ class InvoiceTypes(StrEnum):
     vodafonecash = "vodafonecash"
     razn = "razn"
     rtjs = "rtjs"
+    sberpay = "sberpay",
+    tpay = "tpay",
+    opay = "opay",
+    moniepoint = "moniepoint",
+    palmpay = "palmpay",
+    wave = "wave",
+    orangemoney = "orangemoney",
+    moovmoney = "moovmoney",
+    rtjscard = "rtjscard",
+    ruzs = "ruzs",
+    amobile = "amobile",
+    payid = "payid",
+    baridi = "baridi",
+    multiwidget = "multiwidget",
+    attijari = "attijari",
+    cih = "cih",
+    cashplus = "cashplus",
+    elqr = "elqr",
+    odengi = "odengi"
 
+class EELQRBankALias(StrEnum):
+    bakai = 'bakai',
+    mbank = 'mbank',
+    optima = 'optima',
+    kicb = 'kicb',
+    odengi = 'odengi',
+    demir = 'demir',
+    megapay = 'megapay',
 
 class CredentialsTypes(StrEnum):
-    iban = "iban"
-    phone = "phone"
-    card = "card"
-    fps = "fps"
-    account = "account"
+    iban = "iban",
+    phone = "phone",
+    card = "card",
+    fps = "fps",
+    qr = "qr",
+    account = "account",
     custom = "custom"
 
 
@@ -137,12 +169,13 @@ class RiskScoreLevels(StrEnum):
 
 
 class CancellationReason(StrEnum):
-    NO_MONEY = "NO_MONEY"
-    CREDENTIALS_INVALID = "CREDENTIALS_INVALID"
-    EXPIRED = "EXPIRED"
-    PRECHARGE_GAP_UPPER_LIMIT = "PRECHARGE_GAP_UPPER_LIMIT"
-    CROSS_BANK_TFF_LESS_THAN_3K = "CROSS_BANK_TFF_LESS_THAN_3K"
-    CROSS_BANK_UNSUPPORTED = "CROSS_BANK_UNSUPPORTED"
+    NO_MONEY = "NO_MONEY",
+    CREDENTIALS_INVALID = "CREDENTIALS_INVALID",
+    EXPIRED = "EXPIRED",
+    PRECHARGE_GAP_UPPER_LIMIT = "PRECHARGE_GAP_UPPER_LIMIT",
+    CROSS_BANK_TFF_LESS_THAN_3K = "CROSS_BANK_TFF_LESS_THAN_3K",
+    CROSS_BANK_UNSUPPORTED = "CROSS_BANK_UNSUPPORTED",
+    ACCOUNT_NUMBER_BLACKLISTED = "ACCOUNT_NUMBER_BLACKLISTED"
 
 
 class FeesStrategy(StrEnum):
@@ -151,8 +184,10 @@ class FeesStrategy(StrEnum):
 
 
 class InvoiceDirection(StrEnum):
-    F2C = "F2C"
-    C2F = "C2F"
+    F2C = "F2C",
+    C2F = "C2F",
+    FIAT_IN = "FIAT_IN",
+    FIAT_OUT = "FIAT_OUT"
 
 
 class TTLUnits(StrEnum):
