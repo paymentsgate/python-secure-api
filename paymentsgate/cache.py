@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
-from paymentsgate.tokens import (
-  AccessToken, 
-  RefreshToken
-)
+from paymentsgate.tokens import AccessToken, RefreshToken
+
 
 class AbstractCache(ABC):
     """
@@ -19,15 +17,19 @@ class AbstractCache(ABC):
         ...
 
     @abstractmethod
-    def set_token(self,token: AccessToken | RefreshToken) -> None:
+    def set_token(self, token: AccessToken | RefreshToken) -> None:
         """
         Save the token to the cache under the specified key
         """
         ...
-    
+
+
 @dataclass
 class DefaultCache(AbstractCache):
-    tokens: dict[str, AccessToken | RefreshToken] = field(default_factory=dict, init=False)
+    tokens: dict[str, AccessToken | RefreshToken] = field(
+        default_factory=dict, init=False
+    )
+
     def get_token(self, key: str) -> AccessToken | RefreshToken | None:
         return self.tokens.get(key)
 
