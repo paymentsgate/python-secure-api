@@ -267,6 +267,17 @@ class PayOutTlvRequestModel(BaseRequestModel):
 class GetQuoteTlv(BaseRequestModel):
     data: str
 
+class TLVExtended(BaseResponseModel):
+    merchant: str | None = None # MerchantName
+    logo: str | None = None # MerchantLogo or merchant MCC logo
+    city: str | None = None # Merchant city
+    merchantId: str | None = None # uniq merchant id 
+    zip: str | None = None # merchant address zip code
+    qrRefId: str | None = None # uniq QR code reference id 
+    invoiceId: str | None = None # Merchant invoiceId 
+    merchantBank: str | None = None # Merchant bank name
+    merchantIban: str | None = None # merchant iban
+    merchantBankLogo: str | None = None # merchant bank logo
 
 class QuoteTlvResponse(BaseResponseModel):
     id: str
@@ -277,8 +288,9 @@ class QuoteTlvResponse(BaseResponseModel):
     feePercent: float  # fee percent
     qrVersion: int  # qr code version, 1 - nspk, 2 - tlv encoded, 3 - tlv plain
     rate: float  # exchange rate
-    merchant: Optional[str] = Field(default=None)  # merchant title
-    logo: Optional[str] = Field(default=None)  # merchant logo
+    tlv: TLVExtended | None = None
+    # merchant: Optional[str] = Field(default=None)  # merchant title
+    # logo: Optional[str] = Field(default=None)  # merchant logo
 
 
 class PayOutTlvRequest(BaseRequestModel):
