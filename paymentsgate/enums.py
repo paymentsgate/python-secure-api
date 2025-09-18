@@ -27,6 +27,7 @@ class ApiPaths(StrEnum):
 
 
 class Currencies(StrEnum):
+    USDT = "USDT"
     RUB = "RUB"
     EUR = "EUR"
     USD = "USD"
