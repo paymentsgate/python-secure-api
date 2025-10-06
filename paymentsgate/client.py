@@ -12,6 +12,7 @@ from .models import (
     Credentials,
     GetQuoteModel,
     GetQuoteResponseModel,
+    InvoiceListModelWithMeta,
     PayInModel,
     PayInResponseModel,
     PayOutModel,
@@ -143,6 +144,23 @@ class ApiAsyncClient(BaseClient):
         if not response.success:
             raise APIResponseError(response)
         return response.cast(InvoiceModel, APIResponseError)
+    
+    async def List(self, page: int = 0) -> InvoiceListModelWithMeta:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.invoices_list,
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+            body={"page": page},
+        )
+
+        # Handle response
+        response = await self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+        return response.cast(InvoiceListModelWithMeta, APIResponseError)
 
     async def get_token(self) -> AccessToken | None:
         # First check if valid token is cached
@@ -333,6 +351,7 @@ class ApiClient(BaseClient):
             noAuth=False,
             signature=False,
             body=params.model_dump(exclude_none=True),
+            # body=GetQuoteTlv(**params).model_dump(exclude_none=True),
         )
 
         # Handle response
@@ -358,6 +377,23 @@ class ApiClient(BaseClient):
             raise APIResponseError(response)
 
         return response.cast(InvoiceModel, APIResponseError)
+
+    def List(self, page: int = 0) -> InvoiceListModelWithMeta:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.invoices_list,
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+            body={"page": page},
+        )
+
+        # Handle response
+        response = self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+        return response.cast(InvoiceListModelWithMeta, APIResponseError)
 
     def get_token(self) -> AccessToken | None:
         # First check if valid token is cached
@@ -413,7 +449,10 @@ class ApiClient(BaseClient):
                 headers["Authorization"] = f"Bearer {auth.token}"
 
         if (request.method == 'get'):
-            params = urlencode(body)
+            if (request.body == None):
+                request.body = ''
+
+            params = urlencode(request.body)
             r = httpx.request(
                 method=request.method,
                 url=f"{self.baseUrl}{request.path}?{params}",
@@ -425,7 +464,7 @@ class ApiClient(BaseClient):
                 method=request.method,
                 url=f"{self.baseUrl}{request.path}",
                 headers=headers,
-                json=body,
+                json=request.body,
                 timeout=self.timeout
             )
 

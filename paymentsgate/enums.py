@@ -16,6 +16,7 @@ class ApiPaths(StrEnum):
     invoices_payout_tlv = "/deals/tlv"
     invoices_info = "/deals/:id"
     invoices_credentials = "/deals/:id/credentials"
+    invoices_list = "/deals/list"
     assets_list = "/wallet"
     assets_deposit = "/wallet/deposit"
     banks_list = "/banks/find"
@@ -244,6 +245,7 @@ class InvoiceTypes(StrEnum):
   banktransferdop = ("banktransferdop",)
   sinpemovil = ("sinpemovil",)
   tryqr = ("tryqr",)
+  inrqr = ("inrqr",)
   bsb = ("bsb",)
   banktransfermnt = ("banktransfermnt",)
   stcpay = ("stcpay",)

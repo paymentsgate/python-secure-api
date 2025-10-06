@@ -211,27 +211,28 @@ class InvoiceAmountModel(BaseResponseModel):
 
 
 class InvoiceMetadataModel(BaseResponseModel):
-    invoiceId: Optional[str]
-    clientId: Optional[str]
-    fiatAmount: Optional[float]
+    invoiceId: Optional[str]  | None = None
+    clientId: Optional[str]  | None = None
+    fiatAmount: Optional[float]  | None = None
 
 
 class InvoiceModel(BaseResponseModel):
     id: str | None = Field(..., alias='_id')
-    orderId: str
-    projectId: str
-    currencyFrom: CurrencyModel
-    currencyTo: CurrencyModel
-    direction: InvoiceDirection
-    amount: float
-    status: InvoiceStatusModel
-    amounts: InvoiceAmountModel
-    metadata: InvoiceMetadataModel
-    receiptUrls: List[str]
-    isExpired: bool
+    orderId: str  | None = None
+    projectId: str  | None = None
+    currencyFrom: CurrencyModel  | None = None
+    currencyTo: CurrencyModel  | None = None
+    direction: InvoiceDirection  | None = None
+    amount: float  | None = None
+    status: InvoiceStatusModel  | None = None
+    amounts: InvoiceAmountModel  | None = None
+    metadata: InvoiceMetadataModel  | None = None
+    receiptUrls: List[str]  | None = None
+    isExpired: bool  | None = None
     createdAt: datetime.datetime | None = None
     updatedAt: datetime.datetime | None = None
     expiredAt: datetime.datetime | None = None
+    model_config = ConfigDict(extra="ignore")
 
 
 class AssetsAccountModel(BaseResponseModel):
@@ -289,6 +290,7 @@ class QuoteTlvResponse(BaseResponseModel):
     qrVersion: int  # qr code version, 1 - nspk, 2 - tlv encoded, 3 - tlv plain
     rate: float  # exchange rate
     tlv: TLVExtended | None = None
+    isStatic: bool | None = None
     # merchant: Optional[str] = Field(default=None)  # merchant title
     # logo: Optional[str] = Field(default=None)  # merchant logo
 
@@ -299,3 +301,13 @@ class PayOutTlvRequest(BaseRequestModel):
     clientId: Optional[str] = Field(default=None)
     src_amount: Optional[float] = Field(default=None)
     sender_personal: Optional[PayOutSenderModel] = Field(default=None)
+
+class ListMetadata(BaseResponseModel):
+    page: int
+    limit: int
+    total: int
+
+class InvoiceListModelWithMeta(BaseResponseModel): 
+    meta: ListMetadata
+    rows: List[InvoiceModel]
+    model_config = ConfigDict(extra="ignore")
