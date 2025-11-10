@@ -9,6 +9,7 @@ from .types import TokenResponse
 from .tokens import AccessToken, RefreshToken
 from .exceptions import APIResponseError, APIAuthenticationError
 from .models import (
+    AssetsResponseModel,
     Credentials,
     GetQuoteModel,
     GetQuoteResponseModel,
@@ -163,6 +164,22 @@ class ApiAsyncClient(BaseClient):
         if not response.success:
             raise APIResponseError(response)
         return response.cast(InvoiceListModelWithMeta, APIResponseError)
+
+    async def Assets(self, id: str) -> AssetsResponseModel:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.assets_list,
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+        )
+
+        # Handle response
+        response = await self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+        return response.cast(InvoiceModel, APIResponseError)
 
     async def get_token(self) -> AccessToken | None:
         # First check if valid token is cached
@@ -390,7 +407,7 @@ class ApiClient(BaseClient):
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body={"page": page, "dateFrom": dateFrom, "dateTo": dateTo},
+            body={"page": page},
         )
 
         # Handle response
@@ -398,6 +415,23 @@ class ApiClient(BaseClient):
         if not response.success:
             raise APIResponseError(response)
         return response.cast(InvoiceListModelWithMeta, APIResponseError)
+
+    def Assets(self, params: GetQuoteModel) -> AssetsResponseModel:
+        # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.assets_list,
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+        )
+
+        # Handle response
+        response = self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+
+        return response.cast(AssetsResponseModel, APIResponseError)
 
     def get_token(self) -> AccessToken | None:
         # First check if valid token is cached

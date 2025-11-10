@@ -189,6 +189,12 @@ class CurrencyModel(BaseResponseModel):
     decimal: int
     countryCode: Optional[str] = Field(default=None)
     countryName: Optional[str] = Field(default=None)
+    tokenType: Optional[str] = Field(default=None)
+    blockchainSymbol: Optional[str] = Field(default=None)
+    blockchainMetaAlias: Optional[str] = Field(default=None)
+    isNative: Optional[str] = Field(default=None)
+    tokenAddress: Optional[str] = Field(default=None)
+    testnet: Optional[bool] = Field(default=None)
 
 
 class BankModel(BaseResponseModel):
@@ -240,10 +246,12 @@ class AssetsAccountModel(BaseResponseModel):
     total: float
     pending: float
     available: float
+    model_config = ConfigDict(extra="ignore")
 
 
 class AssetsResponseModel(BaseResponseModel):
     assets: List[AssetsAccountModel]
+    model_config = ConfigDict(extra="ignore")
 
 
 class PayInMultiWidgetOptions(BaseRequestModel):
