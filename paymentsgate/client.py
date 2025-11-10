@@ -145,7 +145,9 @@ class ApiAsyncClient(BaseClient):
             raise APIResponseError(response)
         return response.cast(InvoiceModel, APIResponseError)
     
-    async def List(self, page: int = 0) -> InvoiceListModelWithMeta:
+    # dateFrom: str # ISO: 2025-07-10T00:00:00.873+00:00
+    # dateTo?: str # ISO: 2025-07-10T00:00:00.873+00:00
+    async def List(self, page: int = 0, dateFrom: str = '', dateTo: str = '') -> InvoiceListModelWithMeta:
          # Prepare request
         request = Request(
             method="get",
@@ -153,7 +155,7 @@ class ApiAsyncClient(BaseClient):
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body={"page": page},
+            body={"page": page, "dateFrom": dateFrom, "dateTo": dateTo},
         )
 
         # Handle response
@@ -378,7 +380,9 @@ class ApiClient(BaseClient):
 
         return response.cast(InvoiceModel, APIResponseError)
 
-    def List(self, page: int = 0) -> InvoiceListModelWithMeta:
+    # dateFrom: str # ISO: 2025-07-10T00:00:00.873+00:00
+    # dateTo?: str # ISO: 2025-07-10T00:00:00.873+00:00
+    def List(self, page: int = 0, dateFrom: str = '', dateTo: str = '') -> InvoiceListModelWithMeta:
          # Prepare request
         request = Request(
             method="get",
@@ -386,7 +390,7 @@ class ApiClient(BaseClient):
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body={"page": page},
+            body={"page": page, "dateFrom": dateFrom, "dateTo": dateTo},
         )
 
         # Handle response
