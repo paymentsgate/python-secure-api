@@ -165,7 +165,7 @@ class ApiAsyncClient(BaseClient):
             raise APIResponseError(response)
         return response.cast(InvoiceListModelWithMeta, APIResponseError)
 
-    async def Assets(self, id: str) -> AssetsResponseModel:
+    async def Assets(self) -> AssetsResponseModel:
          # Prepare request
         request = Request(
             method="get",
@@ -416,7 +416,7 @@ class ApiClient(BaseClient):
             raise APIResponseError(response)
         return response.cast(InvoiceListModelWithMeta, APIResponseError)
 
-    def Assets(self, params: GetQuoteModel) -> AssetsResponseModel:
+    def Assets(self) -> AssetsResponseModel:
         # Prepare request
         request = Request(
             method="get",
