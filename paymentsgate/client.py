@@ -407,7 +407,7 @@ class ApiClient(BaseClient):
             content_type='application/json',
             noAuth=False,
             signature=False,
-            body={"page": page},
+            body={"page": page, "dateFrom": dateFrom, "dateTo": dateTo},
         )
 
         # Handle response

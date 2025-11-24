@@ -143,7 +143,7 @@ class GetQuoteModel(BaseRequestModel):
     amount: Decimal
     subtype: InvoiceTypes | None = None
     currency_original: Currencies | None = None
-
+    src_amount: Decimal | None = None
 
 class QuoteEntity(BaseResponseModel):
     currencyFrom: Currencies
@@ -192,7 +192,7 @@ class CurrencyModel(BaseResponseModel):
     tokenType: Optional[str] = Field(default=None)
     blockchainSymbol: Optional[str] = Field(default=None)
     blockchainMetaAlias: Optional[str] = Field(default=None)
-    isNative: Optional[str] = Field(default=None)
+    isNative: Optional[bool] = Field(default=None)
     tokenAddress: Optional[str] = Field(default=None)
     testnet: Optional[bool] = Field(default=None)
 
