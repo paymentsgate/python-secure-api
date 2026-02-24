@@ -179,7 +179,7 @@ class ApiAsyncClient(BaseClient):
         response = await self._send_request(request)
         if not response.success:
             raise APIResponseError(response)
-        return response.cast(InvoiceModel, APIResponseError)
+        return response.cast(AssetsResponseModel, APIResponseError)
 
     async def get_token(self) -> AccessToken | None:
         # First check if valid token is cached
