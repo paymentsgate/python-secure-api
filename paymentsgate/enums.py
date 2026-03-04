@@ -149,6 +149,8 @@ class Currencies(StrEnum):
     YER = "YER"
     ZMK = "ZMK"
     MNT = "MNT"
+    TRX = "TRX"
+    ETH = "ETH"
 
 class Languages(StrEnum):
     EN = ("EN",)
@@ -160,7 +162,10 @@ class Languages(StrEnum):
     RU = ("RU",)
     IN = ("IN",)
     AR = ("AR",)
-    KG = "KG"
+    KG = ("KG",)
+    ES = ("ES",)
+    TG = ("TG",)
+    MN = ("MN",)
 
 
 class Statuses(StrEnum):
@@ -172,6 +177,7 @@ class Statuses(StrEnum):
     disputed = "disputed"
     canceled = "canceled"
     expired = "expired"
+    refunded = "refunded"
 
 
 class CurrencyTypes(StrEnum):
@@ -212,6 +218,7 @@ class InvoiceTypes(StrEnum):
   phonepe = ("phonepe",)
   freecharge = ("freecharge",)
   instapay = ("instapay",)
+  instapayqr = ("instapayqr",)
   vodafonecash = ("vodafonecash",)
   orangecash = ("orangecash",)
   razn = ("razn",)
@@ -224,12 +231,14 @@ class InvoiceTypes(StrEnum):
   stry = ("stry",)
   sthb = ("sthb",)
   sberpay = ("sberpay",)
+  sberpay_s = ("sberpay_s",)
   tpay = ("tpay",)
   opay = ("opay",)
   moniepoint = ("moniepoint",)
   palmpay = ("palmpay",)
   wave = ("wave",)
   orangemoney = ("orangemoney",)
+  orangemoneyjod = ("orangemoneyjod",)
   moovmoney = ("moovmoney",)
   rtjscard = ("rtjscard",)
   ruzs = ("ruzs",)
@@ -260,7 +269,25 @@ class InvoiceTypes(StrEnum):
   banktransferzar = ("banktransferzar",)
   dcecomusd = ("dcecomusd",)
   dcecomeur = ("dcecomeur",)
-  benefitpay = "benefitpay"
+  benefitpay = ("benefitpay",)
+  cliq = ("cliq",)
+  papara = ("papara",)
+  blik = ("blik",)
+  promptpayqr = ("promptpayqr",)
+  applepay = ("applepay",)
+  ideal = ("ideal",)
+  napas = ("napas",)
+  vndqr = ("vndqr",)
+  egpqr = ("egpqr",)
+  oneclick = ("oneclick",)
+  thaiqr = ("thaiqr",)
+  mobilecom = ("mobilecom",)
+  banktransferuyu = ("banktransferuyu",)
+  banktransferngn = ("banktransferngn",)
+  mpesa = ("mpesa",)
+  airtel = ("airtel",)
+  equitel = ("equitel",)
+  fib = ("fib",)
 
 class EELQRBankALias(StrEnum):
     bakai = ("bakai",)
@@ -287,6 +314,7 @@ class RiskScoreLevels(StrEnum):
     hr = "hr"  # highest risk
     ftd = "ftd"  # high risk
     trusted = "trusted"  # low risk
+    mixed = "mixed"
 
 
 class CancellationReason(StrEnum):
@@ -300,7 +328,9 @@ class CancellationReason(StrEnum):
     ANTISPAM = ("ANTISPAM",)
     BY_CLIENT = ("BY_CLIENT",)
     BY_EXPIRATION = ("BY_EXPIRATION",)
-    PAID_CANCEL_BY_EXPIRATION = "PAID_BY_EXPIRATION"
+    PAID_CANCEL_BY_EXPIRATION = ("PAID_BY_EXPIRATION")
+    DIRECT_MATCH_WITHOUT_MATCH_FLOW_FAILED = ("DIRECT_MATCH_WITHOUT_MATCH_FLOW_FAILED")
+    REFUNDED = ("REFUNDED")
 
 
 class FeesStrategy(StrEnum):

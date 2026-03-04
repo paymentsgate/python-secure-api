@@ -19,6 +19,7 @@ from .models import (
     PayOutModel,
     PayOutResponseModel,
     InvoiceModel,
+    InvoiceCredentialsModel,
     GetQuoteTlv,
     PayOutTlvRequest,
     QuoteTlvResponse,
@@ -145,6 +146,23 @@ class ApiAsyncClient(BaseClient):
         if not response.success:
             raise APIResponseError(response)
         return response.cast(InvoiceModel, APIResponseError)
+    
+    def Credentials(self, id: str) -> InvoiceCredentialsModel:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.invoices_credentials.replace(':id', id),
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+        )
+
+        # Handle response
+        response = self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+
+        return response.cast(InvoiceCredentialsModel, APIResponseError)
     
     # dateFrom: str # ISO: 2025-07-10T00:00:00.873+00:00
     # dateTo?: str # ISO: 2025-07-10T00:00:00.873+00:00
@@ -396,6 +414,23 @@ class ApiClient(BaseClient):
             raise APIResponseError(response)
 
         return response.cast(InvoiceModel, APIResponseError)
+    
+    def Credentials(self, id: str) -> InvoiceCredentialsModel:
+         # Prepare request
+        request = Request(
+            method="get",
+            path=ApiPaths.invoices_credentials.replace(':id', id),
+            content_type='application/json',
+            noAuth=False,
+            signature=False,
+        )
+
+        # Handle response
+        response = self._send_request(request)
+        if not response.success:
+            raise APIResponseError(response)
+
+        return response.cast(InvoiceCredentialsModel, APIResponseError)
 
     # dateFrom: str # ISO: 2025-07-10T00:00:00.873+00:00
     # dateTo?: str # ISO: 2025-07-10T00:00:00.873+00:00
