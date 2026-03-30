@@ -7,15 +7,22 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 from paymentsgate.enums import (
+    BankPaymentSystems,
+    BankType,
+    CancellationReason,
+    CredentialsTypes,
     Currencies,
+    CurrencyTypes,
+    DeepLinkDevices,
+    DeepLinkType,
+    EELQRBankALias,
+    FeesStrategy,
+    InvoiceDirection,
     InvoiceTypes,
     Languages,
     Statuses,
     TTLUnits,
-    CurrencyTypes,
-    FeesStrategy,
-    InvoiceDirection,
-    CredentialsTypes,
+    WidgetVersion,
 )
 
 
@@ -30,9 +37,9 @@ class BaseResponseModel(BaseModel):
 class Credentials(BaseModel):
     account_id: str
     public_key: str
-    private_key: Optional[str] = Field(default=None)
-    merchant_id: Optional[str] = Field(default=None)
-    project_id: Optional[str] = Field(default=None)
+    private_key: str | None = None
+    merchant_id: str | None = None
+    project_id: str | None = None
 
     @classmethod
     def fromFile(cls, filename):
@@ -62,41 +69,85 @@ class PayInFingerprintModel(BaseRequestModel):
     city: str
     state: str
     zip: str
-    browser: Optional[PayInFingerprintBrowserModel]
+    browser: PayInFingerprintBrowserModel | None = None
+
+
+class PayInClientCredentialsAddress(BaseRequestModel):
+    line1: str | None = None
+    line2: str | None = None
+    city: str | None = None
+    state: str | None = None
+    zip: str | None = None
+    country: str | None = None
+
+
+class PayInClientCredentials(BaseRequestModel):
+    card: PayInClientCredentialsCard | None = None
+    address: PayInClientCredentialsAddress | None = None
+    firstName: str
+    lastName: str
+    phone: str | None = None
+    email: str | None = None
+
+
+class PayInCredentials(BaseRequestModel):
+    ownerName: str
+    address: str
+    city: str
+    state: str
+    phone: str
 
 
 class PayInModel(BaseRequestModel):
     amount: float  # decimals: 2
     currency: Currencies
-    country: Optional[str]  # Country iso code
-    invoiceId: Optional[str]  # idempotent key
-    clientId: Optional[str]  # uniq client ref
+    country: str | None = None  # Country iso code
+    invoiceId: str | None = None  # idempotent key
+    clientId: str | None = None  # uniq client ref
     type: InvoiceTypes  # Invoice subtype, see documentation
-    bankId: Optional[str]  # ID from bank list or NSPK id
-    trusted: Optional[bool]
-    successUrl: Optional[str]
-    failUrl: Optional[str]
-    backUrl: Optional[str]
-    clientCard: Optional[str]
-    clientName: Optional[str]
-    fingerprint: Optional[PayInFingerprintModel]
-    lang: Optional[Languages]
-    sync: Optional[bool]  # sync h2h scheme, see documentation
-    multiWidgetOptions: Optional[PayInMultiWidgetOptions]
-    theme: Optional[str]  # personalized widget theme
+    bankId: str | None = None  # ID from bank list or NSPK id
+    trusted: bool | None = None
+    successUrl: str | None = None
+    failUrl: str | None = None
+    backUrl: str | None = None
+    clientCard: str | None = None
+    clientName: str | None = None
+    fingerprint: PayInFingerprintModel | None = None
+    lang: Languages | None = None
+    sync: bool | None = None  # sync h2h scheme, see documentation
+    multiWidgetOptions: PayInMultiWidgetOptions | None = None
+    theme: str | None = None  # personalized widget theme
+    clientCredentials: PayInClientCredentials | None = None
+    hostToHost: bool | None = None
+    version: WidgetVersion | None = None
+    description: str | None = None
+    credentials: PayInCredentials | None = None
+
+
+class DeepLinkUrlModel(BaseResponseModel):
+    subtype: DeepLinkType
+    device: DeepLinkDevices
+    path: str
+    description: str
+
+
+class DeepLinkInfoModel(BaseResponseModel):
+    urls: List[DeepLinkUrlModel]
+    country: str | None = None
 
 
 class PayInResponseModel(BaseResponseModel):
     id: str
     status: Statuses
     type: InvoiceTypes
-    url: Optional[str]
-    deeplink: Optional[str]
-    m10: Optional[str]
-    cardholder: Optional[str]
-    account: Optional[str]
-    bankId: Optional[str]
-    accountSubType: Optional[str]
+    url: str | None = None
+    deeplink: str | None = None
+    m10: str | None = None
+    cardholder: str | None = None
+    account: str | None = None
+    bankId: str | None = None
+    accountSubType: str | None = None
+    deepLinkInfo: DeepLinkInfoModel | None = None
 
 
 class PayOutRecipientModel(BaseRequestModel):
@@ -110,7 +161,16 @@ class PayOutRecipientModel(BaseRequestModel):
     account_email: str | None = None  # additional recipient email, use only cases where email is't primary account id
     account_bank_id: str | None = None  # recipient bankId (from API banks or RU NSPK id)
     account_internal_client_number: str | None = None  # Bank internal identifier used for method banktransferphp (Philippines)
+    short_account_number: str | None = None
+    account_qr_url: str | None = None
     type: CredentialsTypes | None = None  # primary credential type
+
+
+class PayOutSenderModel(BaseRequestModel):
+    name: str | None = None
+    birthday: str | None = None
+    phone: str | None = None
+    passport: str | None = None
 
 
 class PayOutModel(BaseRequestModel):
@@ -130,6 +190,9 @@ class PayOutModel(BaseRequestModel):
     quoteId: str | None = None
     src_amount: str | None = None  # Optional, source amount in local currency for 2phase payout
     type: InvoiceTypes | None = None  # payout transaction scheme hint
+    fiatLiquidity: bool | None = None
+    refundAvailable: bool | None = None
+    qrBase64String: str | None = None
 
 
 class PayOutResponseModel(BaseResponseModel):
@@ -161,17 +224,17 @@ class GetQuoteResponseModel(BaseResponseModel):
     fees: Decimal
     fees_percent: Decimal
     quotes: List[QuoteEntity]
-    expiredAt: Optional[datetime.datetime] | None = None
+    expiredAt: datetime.datetime | None = None
 
     # deprecated
-    currency_from: Optional[CurrencyModel] = Field(default=None)
-    currency_to: Optional[CurrencyModel] = Field(default=None)
-    currency_middle: Optional[CurrencyModel] = Field(default=None)
-    rate1: Optional[float] = Field(default=None)
-    rate2: Optional[float] = Field(default=None)
-    rate3: Optional[float] = Field(default=None)
-    net_amount: Optional[float] = Field(default=None)
-    metadata: Optional[object] = Field(default=None)
+    currency_from: CurrencyModel | None = None
+    currency_to: CurrencyModel | None = None
+    currency_middle: CurrencyModel | None = None
+    rate1: float | None = None
+    rate2: float | None = None
+    rate3: float | None = None
+    net_amount: float | None = None
+    metadata: object | None = None
 
 
 class DepositAddressResponseModel(BaseResponseModel):
@@ -185,23 +248,45 @@ class CurrencyModel(BaseResponseModel):
     type: CurrencyTypes
     code: Currencies
     symbol: str
-    label: Optional[str] = Field(default=None)
+    label: str | None = None
     decimal: int
-    countryCode: Optional[str] = Field(default=None)
-    countryName: Optional[str] = Field(default=None)
-    tokenType: Optional[str] = Field(default=None)
-    blockchainSymbol: Optional[str] = Field(default=None)
-    blockchainMetaAlias: Optional[str] = Field(default=None)
-    isNative: Optional[bool] = Field(default=None)
-    tokenAddress: Optional[str] = Field(default=None)
-    testnet: Optional[bool] = Field(default=None)
+    countryCode: str | None = None
+    countryName: str | None = None
+    tokenType: str | None = None
+    blockchainSymbol: str | None = None
+    blockchainMetaAlias: str | None = None
+    isNative: bool | None = None
+    tokenAddress: str | None = None
+    testnet: bool | None = None
+
+
+class BankLogoModel(BaseResponseModel):
+    short: str
+    full: str
+    alt1: str | None = None
+    alt2: str | None = None
 
 
 class BankModel(BaseResponseModel):
+    id: str = Field(..., alias="_id")
     name: str
     title: str
+    title_en: str | None = None
+    alias: str | None = None
+    logo: BankLogoModel
     currency: Currencies
+    currencyId: str
+    type: BankType
+    supportedPaymentSystems: List[BankPaymentSystems]
+    country: str
+    automationAvailable: bool | None = None
+    enabled: bool
+    isTopBank: bool
+    tagColor: str
     fpsId: str
+    tid: str | None = None
+    url: str | None = None
+    textColor: str | None = None
 
 
 class InvoiceStatusModel(BaseResponseModel):
@@ -217,27 +302,47 @@ class InvoiceAmountModel(BaseResponseModel):
 
 
 class InvoiceMetadataModel(BaseResponseModel):
-    invoiceId: Optional[str]  | None = None
-    clientId: Optional[str]  | None = None
-    fiatAmount: Optional[float]  | None = None
+    invoiceId: str | None = None
+    clientId: str | None = None
+    fiatAmount: float | None = None
 
 
 class InvoiceModel(BaseResponseModel):
     id: str | None = Field(..., alias='_id')
-    orderId: str  | None = None
-    projectId: str  | None = None
-    currencyFrom: CurrencyModel  | None = None
-    currencyTo: CurrencyModel  | None = None
-    direction: InvoiceDirection  | None = None
-    amount: float  | None = None
-    status: InvoiceStatusModel  | None = None
-    amounts: InvoiceAmountModel  | None = None
-    metadata: InvoiceMetadataModel  | None = None
-    receiptUrls: List[str]  | None = None
-    isExpired: bool  | None = None
+    merchantId: str | None = None
+    orderId: str | None = None
+    projectId: str | None = None
+    currencyFrom: CurrencyModel | None = None
+    currencyTo: CurrencyModel | None = None
+    exchangePair: str | None = None
+    direction: InvoiceDirection | None = None
+    amount: float | None = None
+    status: InvoiceStatusModel | None = None
+    amounts: InvoiceAmountModel | None = None
+    metadata: InvoiceMetadataModel | None = None
+    receiptUrls: List[str] | None = None
+    reason: CancellationReason | None = None
+    isExpired: bool | None = None
     createdAt: datetime.datetime | None = None
     updatedAt: datetime.datetime | None = None
     expiredAt: datetime.datetime | None = None
+    model_config = ConfigDict(extra="ignore")
+
+class InvoiceCredentialsModel(BaseResponseModel):
+    account_number: str
+    account_owner: str
+    short_account_number: str | None = None
+    account_iban: str | None = None
+    account_swift: str | None = None
+    account_phone: str | None = None
+    account_bic: str | None = None
+    account_ewallet_name: str | None = None
+    account_email: str | None = None
+    account_qr_url: str | None = None
+    account_internal_client_number: str | None = None
+    currency: CurrencyModel | None = None
+    bank: BankModel | None = None
+    type: CredentialsTypes | None = None
     model_config = ConfigDict(extra="ignore")
 
 
@@ -245,6 +350,7 @@ class AssetsAccountModel(BaseResponseModel):
     currency: CurrencyModel
     total: float
     pending: float
+    pendingIn: float
     available: float
     model_config = ConfigDict(extra="ignore")
 
@@ -255,26 +361,29 @@ class AssetsResponseModel(BaseResponseModel):
 
 
 class PayInMultiWidgetOptions(BaseRequestModel):
-    offerAmount: Optional[bool]  # show amount select from best offers
-    elqrBanks: Optional[str]  # elqr bank list
+    offerAmount: bool | None = None  # show amount select from best offers
+    elqrBanks: List[EELQRBankALias] | None = None  # elqr bank list
 
 
-class PayOutSenderModel(BaseRequestModel):
-    name: Optional[str]
-    birthday: Optional[str]
-    phone: Optional[str]
-    passport: Optional[str]
+class PayInClientCredentialsCard(BaseRequestModel):
+    cardNumber: str
+    cvv: str
+    expMonth: str
+    expYear: str
+    holderName: str
 
 
 class PayOutTlvRequestModel(BaseRequestModel):
     quoteId: str  # ID from /fx/tlv response
-    invoiceId: Optional[str]
-    clientId: Optional[str]
-    sender_personal: Optional[PayOutSenderModel]
+    invoiceId: str | None = None
+    clientId: str | None = None
+    sender_personal: PayOutSenderModel | None = None
 
 
 class GetQuoteTlv(BaseRequestModel):
     data: str
+    country: str | None = None
+
 
 class TLVExtended(BaseResponseModel):
     merchant: str | None = None # MerchantName
@@ -299,16 +408,16 @@ class QuoteTlvResponse(BaseResponseModel):
     rate: float  # exchange rate
     tlv: TLVExtended | None = None
     isStatic: bool | None = None
-    # merchant: Optional[str] = Field(default=None)  # merchant title
-    # logo: Optional[str] = Field(default=None)  # merchant logo
+    transactionCreatedAt: datetime.datetime | None = None
+    transactionExpiredAt: datetime.datetime | None = None
 
 
 class PayOutTlvRequest(BaseRequestModel):
     quoteId: str  # quote.id ref
-    invoiceId: Optional[str] = Field(default=None)
-    clientId: Optional[str] = Field(default=None)
-    src_amount: Optional[float] = Field(default=None)
-    sender_personal: Optional[PayOutSenderModel] = Field(default=None)
+    invoiceId: str | None = None
+    clientId: str | None = None
+    src_amount: float | None = None
+    sender_personal: PayOutSenderModel | None = None
 
 class ListMetadata(BaseResponseModel):
     page: int
